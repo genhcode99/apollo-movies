@@ -17,12 +17,13 @@ const Poster = styled.div`
   border-radius: 7px;
 `
 
-const Movie = ({ id, bg }) => {
+const Movie = ({ id, bg, isLiked }) => {
   return (
     <Container>
       <Link to={`/${id}`}>
         <Poster bg={bg} />
       </Link>
+      <button>{isLiked ? 'Unlike' : 'like'}</button>
     </Container>
   )
 }

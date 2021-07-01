@@ -24,7 +24,10 @@ const Container = styled.div`
   align-items: center;
   color: white;
 `
-const Column = styled.div``
+const Column = styled.div`
+  margin-left: 10px;
+  width: 50%;
+`
 const Title = styled.h1`
   font-size: 65px;
   margin-bottom: 15px;
@@ -37,9 +40,11 @@ const Description = styled.p`
   font-size: 28px;
 `
 const Poster = styled.div`
+  background-image: url(${(props) => props.bg});
+  background-size: cover;
+  background-position: center;
   width: 25%;
   height: 60%;
-  background-color: transparent;
 `
 
 const Detail = () => {
@@ -50,11 +55,21 @@ const Detail = () => {
   return (
     <Container>
       <Column>
-        <Title>Name</Title>
-        <Subtitle>English • 4.5</Subtitle>
-        <Description> lorem lpsum lalalalalalalala</Description>
+        <Title>{loading ? 'Loading...' : data.movie.title}</Title>
+        {!loading && data.movie && (
+          <>
+            <Subtitle>
+              {data.movie.language} • {data.movie.rating}
+            </Subtitle>
+            <Description>{data.movie.description_intro}</Description>
+          </>
+        )}
       </Column>
-      {!loading ? <Poster></Poster> : null}
+      {!loading ? (
+        <Poster
+          bg={data?.movie ? data.movie.medium_cover_image : null}
+        ></Poster>
+      ) : null}
     </Container>
   )
 }

@@ -7,11 +7,13 @@ import Movie from '../components/Movie'
 const GET_MOVIE = gql`
   query getMovie($id: Int!) {
     movie(id: $id) {
+      id
       title
       medium_cover_image
       language
       rating
       description_intro
+      isLiked @client
     }
     suggestions(id: $id) {
       id
@@ -26,7 +28,7 @@ const Container = styled.div`
   align-items: center;
 `
 const Top = styled.div`
-  height: 80vh;
+  height: 100vh;
   background-image: linear-gradient(-45deg, #d754ab, #fd723a);
   width: 100%;
   display: flex;
@@ -75,7 +77,11 @@ const Detail = () => {
     <Container>
       <Top>
         <Column>
-          <Title>{loading ? 'Loading...' : data.movie.title}</Title>
+          <Title>
+            {loading
+              ? 'Loading...'
+              : `${data.movie.title} ${data.movie.isLiked ? '💖' : '😩'}`}
+          </Title>
           {!loading && data.movie && (
             <>
               <Subtitle>
@@ -89,11 +95,6 @@ const Detail = () => {
           <Poster bg={data?.movie?.medium_cover_image}></Poster>
         ) : null}
       </Top>
-      <Movies>
-        {data?.suggestions?.map((movie) => (
-          <Movie key={movie.id} id={movie.id} bg={movie.medium_cover_image} />
-        ))}
-      </Movies>
     </Container>
   )
 }

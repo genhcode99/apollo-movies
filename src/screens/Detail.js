@@ -2,6 +2,7 @@ import React from 'react'
 import { useParams } from 'react-router-dom'
 import { gql, useQuery } from '@apollo/client'
 import styled from 'styled-components'
+import Movie from '../components/Movie'
 
 const GET_MOVIE = gql`
   query getMovie($id: Int!) {
@@ -12,11 +13,20 @@ const GET_MOVIE = gql`
       rating
       description_intro
     }
+    suggestions(id: $id) {
+      id
+      medium_cover_image
+    }
   }
 `
 
 const Container = styled.div`
-  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`
+const Top = styled.div`
+  height: 80vh;
   background-image: linear-gradient(-45deg, #d754ab, #fd723a);
   width: 100%;
   display: flex;
@@ -24,6 +34,7 @@ const Container = styled.div`
   align-items: center;
   color: white;
 `
+
 const Column = styled.div`
   margin-left: 10px;
   width: 50%;
@@ -46,6 +57,14 @@ const Poster = styled.div`
   width: 25%;
   height: 60%;
 `
+const Movies = styled.div`
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-gap: 25px;
+  width: 60%;
+  position: relative;
+  top: -30px;
+`
 
 const Detail = () => {
   const { id } = useParams()
@@ -54,22 +73,27 @@ const Detail = () => {
   })
   return (
     <Container>
-      <Column>
-        <Title>{loading ? 'Loading...' : data.movie.title}</Title>
-        {!loading && data.movie && (
-          <>
-            <Subtitle>
-              {data.movie.language} • {data.movie.rating}
-            </Subtitle>
-            <Description>{data.movie.description_intro}</Description>
-          </>
-        )}
-      </Column>
-      {!loading ? (
-        <Poster
-          bg={data?.movie ? data.movie.medium_cover_image : null}
-        ></Poster>
-      ) : null}
+      <Top>
+        <Column>
+          <Title>{loading ? 'Loading...' : data.movie.title}</Title>
+          {!loading && data.movie && (
+            <>
+              <Subtitle>
+                {data.movie.language} • {data.movie.rating}
+              </Subtitle>
+              <Description>{data.movie.description_intro}</Description>
+            </>
+          )}
+        </Column>
+        {!loading ? (
+          <Poster bg={data?.movie?.medium_cover_image}></Poster>
+        ) : null}
+      </Top>
+      <Movies>
+        {data?.suggestions?.map((movie) => (
+          <Movie key={movie.id} id={movie.id} bg={movie.medium_cover_image} />
+        ))}
+      </Movies>
     </Container>
   )
 }

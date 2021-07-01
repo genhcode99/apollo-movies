@@ -74,7 +74,7 @@ const Home = () => {
             <Movie
               key={m.id}
               id={m.id}
-              idLiked={m.isLiked}
+              isLiked={m.isLiked}
               bg={m.medium_cover_image}
             />
           ))}
